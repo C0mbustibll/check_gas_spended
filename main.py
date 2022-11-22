@@ -19,15 +19,17 @@ async def check_tx(tx):
 async def gas(address, api_url, list_tx):
     gas_used = 0
     if api_url == 'https://api-optimistic.etherscan.io/':
-        tx_gas = await asyncio.gather(*[check_tx(tx["hash"]) for tx in list_tx['result']])
+        tx_gas = await asyncio.gather(*[check_tx(tx["hash"]) for tx in list_tx['result'] if tx['from'].lower() == address.lower()])
         for i in tx_gas:
             gas_used += (int(i, 16) / 10 ** 18)
 
         for i in list_tx['result']:
-            gas_used += (float(i['gasPrice']) * float(i['gasUsed'])) / 10 ** 18
+            if i['from'].lower() == address.lower():
+                gas_used += (float(i['gasPrice']) * float(i['gasUsed'])) / 10 ** 18
     else:
         for i in list_tx['result']:
-            gas_used += (float(i['gasPrice']) * float(i['gasUsed'])) / 10 ** 18
+            if i['from'].lower() == address.lower():
+                gas_used += (float(i['gasPrice']) * float(i['gasUsed'])) / 10 ** 18
     if VIEW == 1:
         logger.info(f'{chain_dict[api_url]} {address} ${coin_dict[api_url]}  {"{:.12f}".format(gas_used)}')
     return gas_used
