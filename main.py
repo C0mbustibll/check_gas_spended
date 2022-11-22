@@ -8,6 +8,8 @@ import asyncio
 import aiohttp
 from itertools import zip_longest
 
+logger.add('log.log')
+
 web3 = Web3(Web3.AsyncHTTPProvider('https://rpc.ankr.com/optimism'),
             modules={'eth': (AsyncEth,), 'geth': (Geth, {'txpool': (AsyncGethTxPool,)})}, middlewares=[])
 
