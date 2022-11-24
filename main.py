@@ -22,11 +22,10 @@ async def gas(address, api_url, list_tx):
         tx_gas = await asyncio.gather(*[check_tx(tx["hash"]) for tx in list_t])
         for i in tx_gas:
             gas_used += (int(i, 16) / 10 ** 18)
-        for i in list_t:
-            gas_used += (float(i['gasPrice']) * float(i['gasUsed'])) / 10 ** 18
-    else:
-        for i in list_t:
-            gas_used += (float(i['gasPrice']) * float(i['gasUsed'])) / 10 ** 18
+            
+    for i in list_t:
+        gas_used += (float(i['gasPrice']) * float(i['gasUsed'])) / 10 ** 18
+        
     if VIEW == 1:
         logger.info(f'{chain_dict[api_url]} {address} ${coin_dict[api_url]}  {"{:.12f}".format(gas_used)}')
     return gas_used
